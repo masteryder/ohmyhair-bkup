@@ -1,0 +1,25 @@
+ <div class="main-content">
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="display-3">Rapports de Caisse</h1>
+      </div>
+    </section>
+    <div class="album text-muted text-center ">
+        <p>Veuillez séléctionner une date: </p>
+        <ngb-datepicker [(ngModel)]="model"></ngb-datepicker> 
+        <div class="container">
+            <div class="row">
+              <div class="card">
+                <h1>Par Jour</h1>
+                <a routerLink="/caisse-jour/{{getDate()}}"><img  src="assets/Jour.png" class="center-block" width="128" height="128"  alt="Rapports de caisse"></a>
+                <p class="card-text">Visualisation + Exportation des rapports de caisse par jour</p>
+              </div>
+              <div class="card">
+                <h1>Par Mois</h1>
+                <a routerLink="/caisse-mois/{{getDate()}}"><img src="assets/Mois.png"  class="center-block" width="128" height="128" alt="Stock"></a>
+                <p class="card-text">Visualisation + Exportation des rapports de caisse par mois</p>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>

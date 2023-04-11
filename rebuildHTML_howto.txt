@@ -1,0 +1,2 @@
+1. Garder le .htaccess dans le dossier
+2.   <base href="//localhost:8080/ohmyhair/"> plutot que ce qui a a la base

@@ -1,0 +1,58 @@
+<!--<app-navigation-bar></app-navigation-bar>-->
+<div class="main-content">
+  <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="display-5">Détails pour le {{ds.prettyDate(date)}}</h1>
+        </div>
+  </section>
+  <div *ngIf="!ClientServices" class="text-center">
+    <h3 >Aucun service enregistré pour cette date</h3>
+    <button type="button" class="btn btn-primary" (click)="backClicked()">Retour</button>
+  </div>
+  <div *ngIf="ClientServices">
+    <table>
+      <tr>
+        <td>
+          <button><img src="assets/pdf.png"  (click)="generatePDF()" width="32" height="32"></button>
+        </td>
+        <td>
+            <b>Chiffre d'affaires du jour:</b> {{getRevenue()| number : '1.2-2'}} CHF
+        </td>
+      </tr>
+    </table>
+  </div>
+  <table *ngIf="ClientServices" class="table table-striped">
+    <thead >
+      <tr>
+          <th>Client</th>
+          <th>Total</th>
+          <th>Détails</th>
+          <th>Suppression</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let clientservice of ClientServices; let i = index">
+        <td><a href="/client-detail/{{clientservice.id_client}}">{{ClientNames[i]}}</a></td>
+        <td>{{getTotal(i) | number : '1.2-2'}} CHF</td>
+        <td>
+          <p *ngIf="clientservice.services.length>0">Services: <i *ngFor="let cservice of clientservice.services">{{getServiceName(cservice.id)}}. </i> </p>
+          <p *ngIf="clientservice.produits.length>0">Produits: <i *ngFor="let cproduct of clientservice.produits">{{getProductName(cproduct.id)}} (x{{cproduct.quantite}}). </i> </p>
+        </td>
+        <td><button type="button" class="btn btn-danger" (click)="ds.deleteClientService(clientservice.id)">X</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+  <div *ngIf="ClientServices">
+    <table>
+      <tr>
+        <td>
+          <button><img src="assets/pdf.png"  (click)="generatePDF()" width="32" height="32"></button>
+        </td>
+        <td>
+            <b>Chiffre d'affaires du jour:</b> {{getRevenue()| number : '1.2-2'}} CHF
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

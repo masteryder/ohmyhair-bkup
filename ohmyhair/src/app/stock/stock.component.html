@@ -1,0 +1,134 @@
+<!--<app-navigation-bar></app-navigation-bar>-->
+<div class="main-content">
+  <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="display-3">Stock</h1>
+        </div>
+  </section>
+  <div class="container album text-muted text-center">
+    <h1>Ajout d'un produit</h1>
+
+
+    <!-- MESSAGE D'ERREUR MANQUE UN CHAMP -->
+    <ngb-alert type="danger" *ngIf="missingFieldsAdd" [dismissible]="false" >
+      <strong>Erreur!</strong> Tous les champs doivent être remplis!
+    </ngb-alert>
+    
+    <!-- MESSAGE DE SUCCESS AJOUT REUSSI -->
+    <ngb-alert type="success" *ngIf="addSuccess" [dismissible]="true" >
+      <strong>Succès!</strong> Nouveau produit ajouté à la base de données!
+    </ngb-alert>
+
+    <form>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prix (CHF)</th>
+          <th>Quantité</th>
+          <th>Catégorie</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="col-10">
+                <input class="form-control" type="text" placeholder="Nom" id="nom" [(ngModel)]="nomToAdd" [ngModelOptions]="{standalone: true}" >
+              </div>
+            </td>
+            <td>
+            <div class="col-6"> 
+                <input class="form-control" type="number" placeholder="Prix" id="prix" step="0.05" [(ngModel)]="prixToAdd" [ngModelOptions]="{standalone: true}" > 
+              </div> 
+            </td>
+            <td>
+              <div class="col-5">
+                <input class="form-control" type="number" placeholder="Qté." id="qte" [(ngModel)]="qteToAdd" [ngModelOptions]="{standalone: true}" >
+              </div>
+            </td>
+            <td>
+              <select class="form-control" id="categorie" [(ngModel)]="categorieToAdd" [ngModelOptions]="{standalone: true}" >
+                <option *ngFor="let categorie of Categories" [ngValue]="categorie">{{categorie.nom_categorie}}</option>
+              </select>
+            </td>
+            <td>
+                <button type="submit" class="btn btn-primary" (click)="addNew()">Ajouter</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+
+  <div class="container album text-muted text-center">
+    <h1>Stock Disponible</h1>
+    <p></p>  
+
+    <!-- MESSAGE D'ERREUR MANQUE UN CHAMP -->
+    <ngb-alert type="danger" *ngIf="missingFieldsUpdate" [dismissible]="false" >
+      <strong>Erreur!</strong> Tous les champs doivent être remplis!
+    </ngb-alert>
+
+    <!-- MESSAGE DE MODIFICATION REUSSIE -->  
+    <ngb-alert type="success" *ngIf="updateSuccess" [dismissible]="true" >
+      <strong>Succès!</strong> Produit modifié dans la base de données!
+    </ngb-alert>
+
+    <ngb-accordion [closeOthers]="false" activeIds="static-1">
+      <ngb-panel *ngFor="let categorie of Categories" id="static-{{categorie.id}}" title="{{categorie.nom_categorie}}">
+        <ng-template ngbPanelContent>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prix (CHF)</th>
+                <th>Quantité</th>
+                <th>Opérations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let produit of Products">
+                  <td *ngIf="produit.categorie==categorie.id">
+                    <div class="col-10">
+                      <input class="form-control" name="Nom-{{produit.id}}" type="text" placeholder="Nom" [(ngModel)]="produit.nom_produit" id="nom">
+                    </div>
+                    </td>
+                  <td *ngIf="produit.categorie==categorie.id">
+                    <div class="col-6">
+                      <input class="form-control" name="Prix-{{produit.id}}" type="number" placeholder="Prix" [(ngModel)]="produit.prix" id="prix" step="0.05"> 
+                    </div> 
+                    
+                  </td>
+                  <td *ngIf="produit.categorie==categorie.id">
+                    <div class="col-5">
+                      <input class="form-control" name="Qte-{{produit.id}}" type="number" placeholder="Qté" [(ngModel)]="produit.quantite" id="qte">
+                    </div>
+                  </td>
+                  <td *ngIf="produit.categorie==categorie.id">              
+                    <button class="btn btn-success" attr.aria-label="Save"  mwlConfirmationPopover
+                      [title]="titleUp"
+                      [message]="messageUp"
+                      placement="top" (confirm)="save(produit.id,produit.nom_produit,produit.prix,produit.quantite)">
+                      Sauver
+                    </button>
+
+                    <button
+                      class="btn btn-danger"
+                      mwlConfirmationPopover
+                      [title]="titleSup"
+                      [message]="messageSup"
+                      placement="top"
+                      (confirm)="delete(produit.id)">
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+          </ng-template>
+          <!--</div>
+        </div>-->
+    </ngb-panel><!--</div>-->
+  </ngb-accordion><!--</div>-->
+  </div>
+</div>

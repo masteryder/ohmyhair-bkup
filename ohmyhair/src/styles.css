@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+.main-content {
+  margin-top: 0;
+  padding: 0;
+  padding-top: 44px;
+    height: 100%;
+}
+@media screen and (min-width: 600px) {
+  .main-content {
+        margin-left: 70px;
+  }
+}
+@media screen and (min-width: 800px) {
+  .main-content {
+        margin-left: 200px ;
+  }
+}
+
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+ }
+
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+  font-weight: 300;
+}
+
+.jumbotron .container {
+  max-width: 40rem;
+}
+
+.ui-select-choices.dropdown-menu {
+display: block;
+}
+
+.p-bot {
+  font-size:13px;
+}
+
+.p-top {
+  font-size:26px;
+  font-family:Montserrat, sans-serif;
+  font-weight:600;
+  margin:0;
+}
+
+#pagination .container{
+  text-align:center;
+}

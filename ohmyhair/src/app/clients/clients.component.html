@@ -1,0 +1,177 @@
+<!--<app-navigation-bar></app-navigation-bar>-->
+<div class="main-content">
+
+  <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="display-3">Clients</h1>
+        </div>
+  </section>
+  
+  <section id="clientList">
+
+      
+      <div class="container">
+
+        <div class="row">
+          <div class="col">
+            <h1>Liste des Clients</h1>
+          </div>
+        </div>
+
+        <div class="row">
+          <div *ngIf="Clients!=undefined" class="col align-self-center">
+            <p class="p-top">{{getTotalClients()}}</p>
+            <p class="p-bot">Clients enregistrés</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="container">
+        <p>Filtrer les résultats : <input type="text" [(ngModel)]="ClientTerm"></p>
+        <div class="album text-muted ">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Prénom + Nom</th>
+              <th>Adresse (Rue, NPA + Ville)</th>
+              <th>Date de naissance</th>
+              <th>E-mail</th>
+              <th>Téléphone</th>
+              <th>Détail</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let client of Clients | filter:ClientTerm | paginate: { itemsPerPage: 10, currentPage: p }">
+                <!--<td>{{client.prenom}} {{client.nom}}</td>-->
+                <td>
+                  <!--<input class="form-control" name="Prenom-{{client.id}}" type="text" [(ngModel)]="client.prenom" id="prenom">
+                  <input class="form-control" name="Nom-{{client.id}}" type="text" [(ngModel)]="client.nom" id="nom">-->
+                  {{client.prenom}} {{client.nom}}
+                </td>
+                <td>
+                  <!--<input class="form-control" name="Rue-{{client.id}}" type="text" [(ngModel)]="client.rue" id="rue">
+                  <input class="form-control" name="Npa-{{client.id}}" type="text" [(ngModel)]="client.npa" id="npa">
+                  <input class="form-control" name="Ville-{{client.id}}" type="text" [(ngModel)]="client.ville" id="ville">-->
+                  <p *ngIf="client.rue">{{client.rue}}, {{client.npa}} {{client.ville}}</p>
+                  <p *ngIf="!client.rue">{{client.npa}} {{client.ville}}</p>
+                </td>
+                <td>
+                  <!--<input class="form-control" name="DateNaissance-{{client.id}}" type="date" [(ngModel)]="client.date_naissance" id="date_naissance"><i *ngIf="client.date_naissance">({{calculateAge(client.date_naissance)}} ans)</i>-->
+                  {{client.date_naissance}} <i *ngIf="client.date_naissance">({{calculateAge(client.date_naissance)}} ans)</i>
+                </td>
+                <!--<td *ngIf="client.rue && client.npa">{{client.rue}}, {{client.npa}} {{client.ville}}</td>
+                <td *ngIf="!client.rue || !client.npa">{{client.ville}}</td>-->
+                <!--<td *ngIf="client.date_naissance">{{calculateAge(client.date_naissance)}}</td>
+                <td *ngIf="!client.date_naissance">Inconnu</td>-->
+                <td>
+                    <!--<input class="form-control" name="Email-{{client.id}}" type="email" [(ngModel)]="client.email" id="email">-->
+                    {{client.email}}
+                </td>
+                  <td>
+                    <!--<input class="form-control" name="Telephone-{{client.id}}" type="text" [(ngModel)]="client.telephone" id="telephone">-->
+                    {{client.telephone}}
+                </td>
+                <!--<td>{{client.email}}</td>-->
+                <!--<td>{{client.telephone}}</td>-->
+                <td>
+                  <!--<a class="btn btn-primary" role="button" [routerLink]="['client-detail', client.id]">
+                      ⌕
+                  </a>-->
+                    <a class="btn btn-primary" role="button" routerLink="/client-detail/{{client.id}}">
+                      <i class="fa fa-search-plus"></i>
+                    </a>
+                  <!--button class="btn btn-success" attr.aria-label="Save"  mwlConfirmationPopover
+                      [title]="titleUp"
+                      [message]="messageUp"
+                      placement="top" (confirm)="saveClient(client.id,client.nom, client.prenom, client.rue, client.npa, client.ville, client.email, client.telephone,client.date_naissance)">
+                      <i class="fa fa-save"></i> Sauver
+                    </button>
+
+                    <button
+                      class="btn btn-danger"
+                      mwlConfirmationPopover
+                      [title]="titleSup"
+                      [message]="messageSup"
+                      placement="top"
+                      (confirm)="deleteClient(client.id)">
+                      <i class="fa fa-trash-alt"></i> Supprimer
+                    </button>-->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="pagination">
+          <div class="container">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+          </div>
+      </div>
+  </section>
+  <section id="addClient">
+      <div class="container">  
+          <div class="text-center">
+              <h1>Ajout d'un nouveau client</h1>
+          </div>
+          <ngb-alert type="danger" *ngIf="missingFields" [dismissible]="false" >
+            <strong>Erreur!</strong> Veuillez remplir au moins le nom du client!
+          </ngb-alert>
+          
+          <!-- MESSAGE DE SUCCESS AJOUT REUSSI -->
+          <ngb-alert type="success" *ngIf="addSuccess" [dismissible]="true" >
+            <strong>Succès!</strong> Nouveau client ajouté à la base de données!
+          </ngb-alert>
+    
+          <div class="album text-muted ">
+              <form>
+                <h3>Prénom & Nom</h3>
+                <div class="form-group row">
+                  <label for="prenom" class="col-sm-2 col-form-label">Prénom</label>
+                      <div class="col-4"> 
+                          <input class="form-control" type="text" placeholder="Prénom" id="prenom"  [(ngModel)]="prenomToAdd" [ngModelOptions]="{standalone: true}" > 
+                      </div> 
+                    <label for="nom" class="col-sm-2 col-form-label">Nom</label>
+                    <div class="col-sm-4">
+                          <input class="form-control" type="text" placeholder="Nom" id="nom" [(ngModel)]="nomToAdd" [ngModelOptions]="{standalone: true}" >
+                      </div>
+                </div>
+                <h3>Contact</h3>
+                  <div class="form-group row">
+                    <label for="telephone" class="col-sm-2 col-form-label">Téléphone</label>
+                    <div class="col-sm-4">
+                          <input class="form-control" type="tel" id="telephone" placeholder="Téléphone" [(ngModel)]="telephoneToAdd" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                    <label for="e-mail" class="col-sm-2 col-form-label">E-mail</label>
+                      <div class="col-sm-4">
+                          <input class="form-control" type="email" id="email" placeholder="E-mail" [(ngModel)]="emailToAdd" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                  </div>
+                    <h3>Adresse</h3>
+                    <div class="form-group row">
+                        <label for="rue" class="col-sm-1 col-form-label">Rue n°</label>
+                        <div class="col-sm-4">
+                          <input class="form-control" type="text" placeholder="Rue et n° de porte" id="rue" [(ngModel)]="rueToAdd" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                        <label for="npa" class="col-sm-1 col-form-label">NPA</label>                    
+                        <div class="col-sm-2">
+                          <input class="form-control" type="number" placeholder="NPA" id="npa" [(ngModel)]="npaToAdd" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                        <label for="ville" class="col-sm-1 col-form-label">Ville</label>
+                        <div class="col-sm-3" >
+                          <input class="form-control" type="text" placeholder="Ville" id="ville" [(ngModel)]="villeToAdd" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                    </div>
+                    <h3>Date de naissance</h3>
+                    <div class="form-group row">
+                      <label for="date_naissance" class="col-sm-3 col-form-label">Date de Naissance</label>
+                      <div class="col-sm-5">
+                        <input class="form-control" type="date" id="date_naissance" [(ngModel)]="dateToAdd" [ngModelOptions]="{standalone: true}" >
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" (click)="addClient()">Ajouter</button>
+              </form>
+            </div>
+          </div>
+        </section>
+</div>

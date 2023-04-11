@@ -1,0 +1,32 @@
+<div class="main-content">
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="display-3">Services</h1>
+    </div>
+</section>
+  <div class="container">
+    <div class="text-center">
+        <h1>Liste des Services</h1>
+    </div>
+    Filtrer les résultats : <input type="text" [(ngModel)]="ServiceTerm">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Prix (CHF)</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let service of Services | filter:ServiceTerm | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td>{{service.nom_service}}</td>  
+            <td>{{service.prix}}</td>
+          </tr>
+      </tbody>
+  </table>
+  <div id="pagination">
+      <div class="container">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </div>
+  </div>
+</div>
+</div>

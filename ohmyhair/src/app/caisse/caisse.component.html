@@ -1,0 +1,213 @@
+<!--<app-navigation-bar></app-navigation-bar>-->
+<div class="main-content">
+
+<section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="display-3">Caisse</h1>
+      </div>
+</section>
+<div class="container">
+
+ <!-- MESSAGE D'ERREUR MANQUE UN CHAMP -->
+  <ngb-alert type="danger" *ngIf="missingFields" [dismissible]="false" >
+    <strong>Erreur!</strong> Un problème est survenu lors de l'ajout
+  </ngb-alert>
+  
+  <!-- MESSAGE DE SUCCESS AJOUT REUSSI -->
+  <ngb-alert type="success" *ngIf="addSuccess" [dismissible]="true" >
+    <strong>Succès!</strong> Nouveau service client ajouté à la base de données!
+  </ngb-alert>
+
+
+  <div class="text-center">
+    <h3>Total: {{total| number : '1.2-2'}} CHF <!--<button type="button" class="btn btn-info btn-sm" (click)="calculateTotal()">Calculer</button>--></h3>
+  </div>
+  <hr>
+  <div *ngIf="Clients" class="album text-muted text-center">
+    <h3>Client</h3>
+    <ng-select class="col-sm-12"
+      [multiple]="false"
+      [options]="clientOptions"
+      [(ngModel)]="clientSelectValue">
+  </ng-select>
+  </div>
+  <div *ngIf="Services" class="album">
+    <div class="text-center text-muted">
+        <h3>Services Effectués</h3>
+    </div>
+    
+        <form class="form-horizontal" role="form">
+          <div class="form-check">
+              <label class="form-check-label col-sm-4">
+                <div class="col-sm-8">   
+                  <input class="form-check-input" type="checkbox" id="enfantCheckBox" value="" [checked]="isEnfant" (change)="toggleEnfant()" >
+                  Enfant
+                </div>
+              </label>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-sm-4 control-label"><b>Genre</b></label>
+            <div class="col-sm-8">
+                <label *ngIf="!isEnfant" class="radio-inline"> <input type="radio" [(ngModel)]="sexe" name="sexe" id="sexeHomme" (change)="updateLongueur()" value="1"> Homme </label>
+                <label  *ngIf="!isEnfant" class="radio-inline"> <input type="radio" [(ngModel)]="sexe" name="sexe" id="sexeFemme" (change)="updateLongueur()" value="2"> Femme </label>
+
+                <label  *ngIf="isEnfant" class="radio-inline"> <input type="radio" [(ngModel)]="sexe" name="sexe" id="sexeHomme" (change)="updateLongueur()" value="1"> Garçon </label>
+                <label  *ngIf="isEnfant" class="radio-inline"> <input type="radio" [(ngModel)]="sexe" name="sexe" id="sexeFemme" (change)="updateLongueur()" value="2"> Fille </label>
+
+                <label class="radio-inline"> <input type="radio" [(ngModel)]="sexe" name="sexe" id="sexeTous" (change)="updateLongueur()" value="0" checked> Tous </label>
+            </div>
+          </div>
+          <div *ngIf="!isEnfant && sexe!=1" class="form-group">
+            <label class="col-sm-4 control-label"><b>Longueur des cheveux</b></label>
+            <div class="col-sm-8">
+                <label class="radio-inline"> <input type="radio" [(ngModel)]="longueur" name="longueur" (change)="updateLongueur()" id="longueurCourt" value="1"> Courts </label>
+                <label class="radio-inline"> <input type="radio" [(ngModel)]="longueur" name="longueur" (change)="updateLongueur()" id="longueurMilongs" value="2"> Mi-longs </label>
+                <label class="radio-inline"> <input type="radio" [(ngModel)]="longueur" name="longueur" (change)="updateLongueur()" id="longueurLongs" value="3"> Longs </label>
+                <label class="radio-inline"> <input type="radio" [(ngModel)]="longueur" name="longueur" (change)="updateLongueur()" id="longueurLongs" value="0"> Toutes </label>
+            </div>
+          </div>
+        </form>
+        <ng-select class="col-sm-11"
+            [multiple]="false"
+            [options]="servicesOptions"
+            [(ngModel)]="servicesSelectValue">
+        </ng-select><button class="btn btn-primary" (click)=addService() [disabled]="!servicesSelectValue || servicesSelectValue.length==0">Ajouter</button>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prix (CHF)</th>
+              <th>Rabais (CHF)</th>
+              <th>Supplément (CHF)</th>
+              <th>Commentaire</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody *ngIf="currentServices">
+            <tr *ngFor="let c of currentServices; let i = index ">
+                <td>{{currentServicesNames[i]}}</td>
+                <td>{{currentServicesPrices[i]}}</td>
+                <td>
+                  <div>
+                    <input  [(ngModel)]="rabaisS[i]" name="RabaisS-{{i}}" type="number" placeholder="Rabais" id="rabais" step="0.05" (change)="calculateTotal()" > 
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <input  [(ngModel)]="supplementS[i]" name="SupplementS-{{i}}" type="number" placeholder="Supplément" id="supplement" step="0.05" (change)="calculateTotal()"> 
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <textarea  [(ngModel)]="commentaireS[i]" name="CommentaireS-{{i}}" type="textarea" placeholder="Commentaire" id="commentaire"></textarea>
+                  </div>
+                </td>
+                <td>
+                  <button class="btn btn-danger"
+                    (click)="deleteService(i)">
+                    Supprimer
+                  </button>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+
+  </div>
+  <div *ngIf="Products" class="album">
+    <div class="text-center text-muted">
+        <h3>Produits Achetés</h3>
+    </div>
+        <ng-select class="col-sm-11"
+            [multiple]="false"
+            [options]="produitsOptions"
+            [(ngModel)]="produitsSelectValue">
+        </ng-select><button class="btn btn-primary" (click)=addProduct() [disabled]="!produitsSelectValue || produitsSelectValue.length==0">Ajouter</button>
+  </div>
+  <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prix (CHF)</th>
+              <th>Quantité</th>
+              <th>Rabais (CHF)</th>
+              <th>Supplément (CHF)</th>
+              <th>Commentaire</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody *ngIf="currentProducts">
+            <tr *ngFor="let c of currentProducts; let i = index">
+                <td>{{currentProductsNames[i]}}</td>
+                <td>{{currentProductsPrices[i]}}</td>
+                <td>
+                  <div>
+                    <input  [(ngModel)]="quantiteP[i]" value="1" name="QuantiteP-{{i}}" type="number" placeholder="Qté." id="quantite" step="1" (change)="calculateTotal()"> 
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <input [(ngModel)]="rabaisP[i]" name="RabaisP-{{i}}" type="number" placeholder="Rabais" id="rabais" step="0.05" (change)="calculateTotal()"> 
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <input  [(ngModel)]="supplementP[i]" name="SupplementP-{{i}}" type="number" placeholder="Supplément" id="supplement" step="0.05" (change)="calculateTotal()"> 
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <textarea [(ngModel)]="commentaireP[i]" name="CommentaireP-{{i}}" type="textarea" placeholder="Commentaire" id="commentaire"></textarea>
+                  </div>
+                </td>
+                <td>
+                  <button class="btn btn-danger"
+                    (click)="deleteProduct(i)">
+                    Supprimer
+                  </button>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+  <div class="album">
+    <h1 class="text-center">Validation du service</h1>
+    <form class="form-horizontal" role="form">
+      <div class="form-check">
+              <label class="form-check-label col-sm-4">
+                <div class="col-sm-8">   
+                  <input class="form-check-input" type="checkbox" id="carteCheckbox" value="" [checked]="!paye_cash" >
+                  Payé par carte
+                </div>
+              </label>
+          </div>
+          <div>
+            <label class="col-2">Rabais global</label>
+            <input  name="RabaisGlobal" type="number" placeholder="Rabais global" [(ngModel)]="rabais" id="rabais" step="0.05" (change)="calculateTotal()"> CHF
+          </div>
+          <div>
+           <label class="col-2">Supplément global</label>
+            <input  name="SupplementGlobal" type="number" placeholder="Supplément global"  [(ngModel)]="supplement" id="supplement" step="0.05" (change)="calculateTotal()"> CHF
+          </div>
+          <div>
+            <label class="col-2">Commentaire</label>
+            <textarea  class="col-5" name="Commentaire" type="textarea" [(ngModel)]="commentaire" placeholder="Commentaire" id="commentaire"></textarea>
+          </div>
+            <div class="text-center">
+              <h3>Total: {{total| number : '1.2-2'}} CHF <!--<button type="button" class="btn btn-info btn-sm" (click)="calculateTotal()">Calculer</button>--></h3>
+            </div>
+            <hr>
+          <div class="text-center">
+           <button class="btn btn-success btn-lg"
+                    mwlConfirmationPopover
+                    title="Confirmation"
+                    message="Est-ce que les données entrées sont bien correctes?"
+                    placement="top"
+                    (confirm)="Validate()"
+                    [disabled]="!clientSelectValue || clientSelectValue.length==0">
+            Valider
+          </button>
+          </div>
+    </form>
+  </div>
+</div>
+</div>

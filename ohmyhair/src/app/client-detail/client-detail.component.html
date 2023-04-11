@@ -1,0 +1,94 @@
+<div class="main-content">
+<section class="jumbotron text-center">
+      <div class="container">
+        <h1 *ngIf="id" class="display-5">Détails pour {{clientName|async}}</h1>
+      </div>
+</section>
+<section id="stats" *ngIf="ClientServices">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <p class="p-top">{{getNumberVisits()}}</p>
+        <p class="p-bot">Visites</p>
+      </div>
+      <div class="col">
+          <p class="p-top">{{getOverallTotal()| number: '1.2-2'}} CHF</p>
+          <p class="p-bot">Dépensés au total</p>
+        </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <ngb-accordion *ngIf="ClientServices" [closeOthers]="false">
+        <ngb-panel *ngFor="let cs of ClientServices | paginate: { itemsPerPage: 10, currentPage: p }; let i = index" id="static-{{clientserviceservice.textDate(clientservice.timestamp)}}{{i}}" title="{{clientserviceservice.textDate(cs.timestamp)}} - ({{getTotal(i)| number : '1.2-2'}} CHF)">
+          <ng-template ngbPanelContent>        
+
+            <div id="services" *ngIf="cs.services!=undefined && cs.services.length>0">
+            <h4>Services Effectués</h4>
+            <table class="table table-striped">
+              <thead> 
+                <tr>
+                  <th>Nom</th>
+                  <th>Prix (CHF)</th>
+                  <th>Rabais (CHF)</th>
+                  <th>Supplément (CHF)</th>
+                  <th>Commentaire</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cservice of cs.services">
+                    <td>{{getServiceName(cservice.id)}}</td>
+                    <td>{{getServicePrice(cservice.id)}}</td>
+                    <td>{{cservice.rabais}}</td>
+                    <td>{{cservice.supplement}}</td>
+                    <td>{{cservice.commentaire}}</td>
+                  </tr>
+              </tbody>
+            </table>
+            <h5 style="text-align:right;">Total des services: {{getTotalServices(i)| number : '1.2-2'}} CHF</h5>
+            </div>
+            <div id="products" *ngIf="cs.produits!=undefined && cs.produits.length>0">
+              <h4>Produits achetés</h4>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Prix unité (CHF)</th>
+                    <th>Quantité</th>
+                    <th>Rabais (CHF)</th>
+                    <th>Supplément (CHF)</th>
+                    <th>Commentaire</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cproduct of cs.produits">
+                      <td>{{getProductName(cproduct.id)}}</td>
+                      <td>{{getProductPrice(cproduct.id)}}</td>
+                      <td>{{cproduct.quantite}}</td>
+                      <td>{{cproduct.rabais}}</td>
+                      <td>{{cproduct.supplement}}</td>
+                      <td>{{cproduct.commentaire}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 style="text-align:right;">Total des produits: {{getTotalProduits(i)| number : '1.2-2'}} CHF</h5>
+            </div>
+            <p *ngIf="cs.rabais>0"><b>Rabais sur l'ensemble:</b> {{cs.rabais}} CHF</p>
+            <p *ngIf="cs.supplement>0"><b>Supplément sur l'ensemble: </b>{{cs.supplement}} CHF</p>
+            <p *ngIf="cs.commentaire"><b>Commentaire:</b> "{{cs.commentaire}}"</p>
+            <hr/>
+            <h4>Grand total: {{getTotal(i)| number : '1.2-2'}} CHF</h4>
+            <td><button type="button" class="btn btn-danger" (click)="ds.deleteClientService(cs.id)">Supprimer</button></td>
+            </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    <div id="pagination">
+      <div class="container">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
